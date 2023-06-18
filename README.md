@@ -1,13 +1,15 @@
 ### To be completed and organized, 70% done, need to fix some hard-coding in scripts
 
 
-# Title of Paper
+# Synthetic Augmentation with Large-scale Unconditional Pre-training
 
-This repository contains the code used in the MICCAI 23' paper titled "Title of Paper".
+This repository contains the code used in the MICCAI 23' paper titled "Synthetic Augmentation with Large-scale
+Unconditional Pre-training".
 
 ## Abstract
 
-Provide a brief summary of the research paper.
+Deep learning based medical image recognition systems often require a substantial amount of training data with expert annotations, which can be expensive and time-consuming to obtain. Recently, synthetic augmentation techniques have been proposed to mitigate the issue by generating realistic images conditioned on class labels. However, the effectiveness of these methods heavily depends on the representation capability of the trained generative model, which cannot be guaranteed without sufficient labeled training data. To further reduce the dependency on annotated data, we propose a synthetic augmentation method called HistoDiffusion, which can be pre-trained on large-scale unlabeled datasets and later applied to a small-scale labeled dataset for augmented training. In particular, we train a latent diffusion model (LDM) on diverse unlabeled datasets to learn common features and generate realistic images without conditional inputs. Then, we fine-tune the model
+with classifier guidance in latent space on an unseen labeled dataset so that the model can synthesize images of specific categories. Additionally, we adopt a selective mechanism to only add synthetic samples with high confidence of matching to target labels. We evaluate our proposed method by pre-training on three histopathology datasets and testing on a histopathology dataset of colorectal cancer (CRC) excluded from the pre-training datasets. With HistoDiffusion augmentation, the classification accuracy of a backbone classifier is remarkably improved by 6.4% using a small set of the original labels.
 
 ## Package Requirements
 
