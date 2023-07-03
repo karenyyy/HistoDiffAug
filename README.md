@@ -1,4 +1,4 @@
-### To be completed and organized, 70% done, need to fix some hard-coding in scripts
+### Wrapping up, almost done, need to fix some hard-coding in scripts
 
 
 # Synthetic Augmentation with Large-scale Unconditional Pre-training
