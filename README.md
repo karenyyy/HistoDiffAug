@@ -12,14 +12,14 @@ Deep learning based medical image recognition systems often require a substantia
 with classifier guidance in latent space on an unseen labeled dataset so that the model can synthesize images of specific categories. Additionally, we adopt a selective mechanism to only add synthetic samples with high confidence of matching to target labels. We evaluate our proposed method by pre-training on three histopathology datasets and testing on a histopathology dataset of colorectal cancer (CRC) excluded from the pre-training datasets. With HistoDiffusion augmentation, the classification accuracy of a backbone classifier is remarkably improved by 6.4% using a small set of the original labels.
 
 ## Model Architecture
-[](imgs/framework.png)
+![](imgs/framework.png)
 
-[](imgs/architecture.pdf)
+![](imgs/architecture.png)
 
 
 ## Results visualization
 
-[](imgs/histo_real_syn_images.pdf)
+![](imgs/syn_results.png)
 
 
 
