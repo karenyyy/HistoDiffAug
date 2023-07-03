@@ -46,8 +46,7 @@ model:
       params:
         embed_dim: 3
         monitor: "val/rec_loss"
-#        ckpt_path: /data/histo_diffusion_augmentation/autoencoder.ckpt
-        ckpt_path: /data/karenyyy/latent-diffusion4/logs/2023-03-14_16-57-42_autoencoder_histo_kl_64x64x3/autoencoder_43_9000.ckpt
+        ckpt_path: /data/histo_diffusion_augmentation/autoencoder.ckpt
         ddconfig:
           double_z: True
           z_channels: 3
@@ -55,7 +54,7 @@ model:
           in_channels: 3
           out_ch: 3
           ch: 128
-          ch_mult: [ 1,2,4]  # num_down = len(ch_mult)-1
+          ch_mult: [ 1,2,4]
           num_res_blocks: 2
           attn_resolutions: [ ]
           dropout: 0.0
@@ -63,12 +62,6 @@ model:
           target: torch.nn.Identity
 
     cond_stage_config: "__is_unconditional__"
-#    cond_stage_config:
-#      target: ldm.modules.encoders.modules.ClassEmbedder
-#      params:
-#        n_classes: 9
-#        embed_dim: 512
-#        key: class_label
 
 data:
   target: main.DataModuleFromConfig

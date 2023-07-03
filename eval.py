@@ -26,10 +26,8 @@ from timm.scheduler import create_scheduler
 from timm.utils import NativeScaler, get_state_dict, ModelEma, accuracy
 from torchvision import datasets, transforms
 
-import models
+from ldm import models
 from misc import utils
-from models.cyphervit import CypherViT
-
 from torchmetrics.classification import F1, Precision, Specificity
 
 import warnings
@@ -469,9 +467,6 @@ def main(args):
             use_mean_pooling=args.avgpool_patchtokens,
             num_classes=args.num_classes,
         )
-    elif 'cypher' in args.arch:
-        model = CypherViT(
-            num_classes=args.num_classes)
     elif 'resnet' in args.arch:
         model = models.__dict__[args.arch](
             num_classes=args.num_classes

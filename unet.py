@@ -8,8 +8,8 @@ import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .fp16_util import convert_module_to_f16, convert_module_to_f32
-from .nn import (
+from utils.fp16_util import convert_module_to_f16, convert_module_to_f32
+from nn import (
     checkpoint,
     conv_nd,
     linear,
@@ -716,27 +716,6 @@ class EncoderUNetModel(nn.Module):
         pool="adaptive",
     ):
         super().__init__()
-
-        for i in [image_size,
-        in_channels,
-        model_channels,
-        out_channels,
-        num_res_blocks,
-        attention_resolutions,
-        dropout,
-        channel_mult,
-        conv_resample,
-        dims,
-        use_checkpoint,
-        use_fp16,
-        num_heads,
-        num_head_channels,
-        num_heads_upsample,
-        use_scale_shift_norm,
-        resblock_updown,
-        use_new_attention_order,
-        pool]:
-            print(i)
 
         if num_heads_upsample == -1:
             num_heads_upsample = num_heads

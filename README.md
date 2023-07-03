@@ -53,15 +53,15 @@ python main.py --base configs/latent-diffusion/histo-ldm-kl-8.yaml -t --gpus 0,1
 ### classifier training
 
 ```python
-CUDA_VISIBLE_DEVICES=0 python classifier_train.py --data_dir /data/karenyyy/PCam/train10+fake \
-                                    --val_data_dir /data/karenyyy/PCam/val10 \
+CUDA_VISIBLE_DEVICES=0 python classifier_train.py --data_dir /data/karenyyy/CRC_Data/train5 \
+                                    --val_data_dir /data/karenyyy/CRC_Data/val \
                                     --iterations 300000 \
                                     --anneal_lr True \
                                     --batch_size 32 \
                                     --lr 5e-5 \
-                                    --save_interval 100 \
+                                    --save_interval 10000 \
                                     --weight_decay 0.05 \
-                                    --image_size 64 \
+                                    --image_size 256 \
                                     --classifier_attention_resolutions 32,16 \
                                     --classifier_depth 2 \
                                     --classifier_width 128 \
@@ -82,10 +82,6 @@ python sample_diffusion.py -r /data/histo_diffusion_augmentation/diffusion_model
 ```python
 python distance.py
 ```
-
-
-
-
 
 ### evaluation 
 

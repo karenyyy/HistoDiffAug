@@ -1,13 +1,73 @@
 import argparse
 import importlib
 import inspect
+import os
 
 import torch
 from omegaconf import OmegaConf
 
-from .unet import UNetModel, EncoderUNetModel
+from unet import UNetModel, EncoderUNetModel
 
 NUM_CLASSES = 9
+
+
+def get_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-r",
+        "--resume",
+        type=str,
+        nargs="?",
+        help="load from logdir or checkpoint in logdir",
+        default='/data/histo_diffusion_augmentation/diffusion_model.ckpt'
+    )
+    parser.add_argument(
+        "-n",
+        "--n_samples",
+        type=int,
+        nargs="?",
+        help="number of samples to draw",
+        default=50000
+    )
+    parser.add_argument(
+        "-e",
+        "--eta",
+        type=float,
+        nargs="?",
+        help="eta for ddim sampling (0.0 yields deterministic sampling)",
+        default=1.0
+    )
+    parser.add_argument(
+        "-v",
+        "--vanilla_sample",
+        default=False,
+        action='store_true',
+        help="vanilla sampling (default option is DDIM sampling)?",
+    )
+    parser.add_argument(
+        "-l",
+        "--logdir",
+        type=str,
+        nargs="?",
+        help="extra logdir",
+        default="none"
+    )
+    parser.add_argument(
+        "-c",
+        "--custom_steps",
+        type=int,
+        nargs="?",
+        help="number of steps for ddim and fastdpm sampling",
+        default=50
+    )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        nargs="?",
+        help="the bs",
+        default=10
+    )
+    return parser
 
 
 def classifier_defaults():
@@ -67,6 +127,36 @@ def create_classifier(
     # return torch.hub.load('pytorch/vision:v0.8.0', 'resnet34', pretrained=False)
 
 
+
+def create_diffusion():
+    parser = get_parser()
+    opt, unknown = parser.parse_known_args()
+    configs = [OmegaConf.load('configs/latent-diffusion/histo-ldm-kl-8.yaml')]
+    cli = OmegaConf.from_dotlist(unknown)
+    config = OmegaConf.merge(*configs, cli)
+    # print(config)
+
+    if not os.path.exists(opt.resume):
+        raise ValueError("Cannot find {}".format(opt.resume))
+    if os.path.isfile(opt.resume):
+        # paths = opt.resume.split("/")
+        try:
+            logdir = '/'.join(opt.resume.split('/')[:-1])
+            # idx = len(paths)-paths[::-1].index("logs")+1
+            # print(f'Logdir is {logdir}')
+        except ValueError:
+            paths = opt.resume.split("/")
+            idx = -2
+            logdir = "/".join(paths[:idx])
+        ckpt = opt.resume
+    else:
+        assert os.path.isdir(opt.resume), f"{opt.resume} is not a directory"
+        logdir = opt.resume.rstrip("/")
+        ckpt = os.path.join(logdir, "model.ckpt")
+
+    diffusion, global_step = load_model(config, ckpt)
+    return diffusion
+
 def instantiate_from_config(config):
     if not "target" in config:
         if config == '__is_first_stage__':
@@ -93,7 +183,7 @@ def load_model_from_config(config, sd):
     return model
 
 
-def load_model(config, ckpt, gpu, eval_mode):
+def load_model(config, ckpt):
     if ckpt:
         print(f"Loading model from {ckpt}")
         pl_sd = torch.load(ckpt, map_location="cpu")
@@ -103,7 +193,6 @@ def load_model(config, ckpt, gpu, eval_mode):
         global_step = None
     model = load_model_from_config(config.model,
                                    pl_sd["state_dict"])
-
     return model, global_step
 
 

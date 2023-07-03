@@ -1,11 +1,8 @@
 
 import argparse
 import os
-import pickle
 
 import blobfile as bf
-import numpy as np
-import torch
 import torch as th
 import torch.distributed as dist
 import torch.nn.functional as F
@@ -14,17 +11,17 @@ from sklearn.metrics import f1_score
 from torch.nn.parallel.distributed import DistributedDataParallel as DDP
 from torch.optim import AdamW
 
-import dist_util, logger
-from fp16_util import MixedPrecisionTrainer
-from image_datasets import load_data
-from resample import create_named_schedule_sampler
-from script_util import (
+from utils import dist_util, logger
+from utils.fp16_util import MixedPrecisionTrainer
+from utils.image_datasets import load_data
+from utils.script_util import (
     add_dict_to_argparser,
     args_to_dict,
     classifier_defaults,
     create_classifier,
+    create_diffusion
 )
-from train_util import parse_resume_step_from_filename, log_loss_dict
+from utils.train_util import parse_resume_step_from_filename, log_loss_dict
 
 
 def main():
@@ -68,6 +65,8 @@ def main():
         find_unused_parameters=False,
     )
 
+    diffusion = create_diffusion()
+
     logger.log("creating data loader...")
     data = load_data(
         data_dir=args.data_dir,
@@ -98,43 +97,29 @@ def main():
 
     logger.log("training classifier model...")
 
-    def forward_backward_log(data_loader, prefix="train"):
+    def forward_backward_log(data_loader, diffusion, prefix="train"):
         batch, extra, img_paths = next(data_loader)
         labels = extra["y"].to(dist_util.dev())
         batch = batch.to(dist_util.dev())
 
-        # with th.no_grad():
-        #     encoder_posterior = diffusion.encode_first_stage(batch)
-        #     batch = diffusion.get_first_stage_encoding(encoder_posterior).detach()
-            # print('batch.shape: ', batch.shape)
+        with th.no_grad():
+            encoder_posterior = diffusion.encode_first_stage(batch)
+            batch = diffusion.get_first_stage_encoding(encoder_posterior).detach()
 
-            # autoencoder = autoencoder.to(batch.device)
-            # encoder_posterior = autoencoder.encode(batch)
-            # feature_to_save = encoder_posterior.sample().detach()
 
-            # b, c, w, h = feature_to_save.shape
-            # print('feature_to_save', feature_to_save.shape)
-            # feature_to_save = feature_to_save.view(b, c*w*h)
-        # Noisy images
-        if args.noised: # True
-            t, _ = schedule_sampler.sample(batch.shape[0], dist_util.dev())
-            batch = diffusion.q_sample(batch, t)
-        else:
-            t = th.zeros(batch.shape[0], dtype=th.long, device=dist_util.dev())
+        t = th.zeros(batch.shape[0], dtype=th.long, device=dist_util.dev())
 
         for i, (sub_batch, sub_labels, sub_t) in enumerate(
             split_microbatches(args.microbatch, batch, labels, t)
         ):
 
-            # logits, features = model(sub_batch, timesteps=sub_t)
-            _, logits = model(sub_batch)
+            logits, features = model(sub_batch, timesteps=sub_t)
+            # _, logits = model(sub_batch)
 
-            # print('logits, sub_labels: ', logits.type(), sub_labels.type())
             loss = F.cross_entropy(logits, sub_labels, reduction="none")
 
             _, pred = logits.topk(1, 1, True, True)
             pred = pred.t()
-            # print('pred, target: ', pred.size(), (sub_labels.reshape(1, -1).expand_as(pred)).size())
             preds = pred.squeeze(0).data.cpu().numpy()
             targets = sub_labels.reshape(1, -1).expand_as(pred).squeeze(0).data.cpu().numpy()
 
@@ -169,36 +154,22 @@ def main():
         if args.anneal_lr:
             set_annealed_lr(opt, args.lr, (step + resume_step) / args.iterations)
 
-        forward_backward_log(data)
-
-        # if real_or_fake is not None:
-        #     real_fakes.append(real_or_fake.cpu().numpy())
+        forward_backward_log(data, diffusion)
 
         mp_trainer.optimize(opt)
         if val_data is not None and not step % args.eval_interval:
             with th.no_grad():
                 with model.no_sync():
                     model.eval()
-                    forward_backward_log(val_data, prefix="val")
+                    forward_backward_log(val_data, diffusion, prefix="val")
                     model.train()
         if not step % args.log_interval:
             logger.dumpkvs()
 
-        # if step % 2000 == 0:
-        #     logger.log("saving model...")
-            # save_model(mp_trainer, args, step + resume_step)
-            # asset_dict = {
-            #     'embeddings': np.vstack(embeddings),
-            #     'labels': np.vstack(labels).squeeze(),
-            #     # 'real_fakes': np.vstack(real_fakes).squeeze()
-            # }
-            # with open(f'saved_results/autoencoder_crc9_all4_{step}_latent_features.pkl', 'wb') as handle:
-            #     pickle.dump(asset_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
-            # print(f'saved_results/autoencoder_crc9_all4_{step}_latent_features.pkl saved!')
+        if step % args.save_interval == 0 and step > 0:
+            logger.log("saving model...")
+            save_model(mp_trainer, args, step + resume_step)
 
-    if dist.get_rank() == 0:
-        logger.log("saving model...")
-        # save_model(mp_trainer, opt, step + resume_step)
     dist.barrier()
 
 
@@ -253,7 +224,7 @@ def create_argparser():
         resume_checkpoint="",
         log_interval=10,
         eval_interval=5,
-        save_interval=100,
+        save_interval=10000,
     )
     defaults.update(classifier_defaults())
     parser = argparse.ArgumentParser()

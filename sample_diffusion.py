@@ -15,6 +15,7 @@ from ldm.models.autoencoder import AutoencoderKL
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.modules.diffusionmodules.openaimodel import EncoderUNetModel
 from ldm.util import instantiate_from_config
+from utils.script_util import get_parser
 
 rescale = lambda x: (x + 1.) / 2.
 
@@ -104,37 +105,6 @@ def make_convolutional_sample(model, batch_size, cond_fn=None, model_kwargs=None
 
     x_sample = model.decode_first_stage(sample)
 
-    # autoencoder = AutoencoderKL(
-    #     embed_dim=3,
-    #     monitor="val/rec_loss",
-    #     # ckpt_path='/data/histo_diffusion_augmentation/autoencoder.ckpt',
-    #     ckpt_path='/data/karenyyy/latent-diffusion4/logs/2023-02-25_04-33-20_autoencoder_histo_kl_64x64x3/autoencoder_4_13000.ckpt',
-    #     # ckpt_path='/data/karenyyy/latent-diffusion4/logs/2023-02-23T23-36-06_autoencoder_histo_kl_64x64x3/diffusion_8_18000.ckpt',
-    #     # ckpt_path='/data/karenyyy/latent-diffusion2/logs/2023-02-06_21-23-40_autoencoder_histo_kl_64x64x3/autoencoder_6_41000.ckpt',
-    #     ddconfig={
-    #         'double_z': True,
-    #         'z_channels': 3,
-    #         'resolution': 256,
-    #         'in_channels': 3,
-    #         'out_ch': 3,
-    #         'ch': 128,
-    #         'ch_mult': [1, 2, 4],
-    #         'num_res_blocks': 2,
-    #         'attn_resolutions': [],
-    #         'dropout': 0.0
-    #     },
-    #     lossconfig={
-    #         'target': torch.nn.Identity
-    #     }
-    #
-    # )
-    # autoencoder.eval()
-    # autoencoder = autoencoder.to(sample.device)
-    # print('1. / sample.flatten().std(): ', 1. / sample.flatten().std())
-    # scale_factor = torch.tensor(0.1574)
-    # sample = 1. / scale_factor * sample
-    # x_sample = autoencoder.decode(sample)
-
     log["sample"] = x_sample
     log["time"] = t1 - t0
     log['throughput'] = sample.shape[0] / (t1 - t0)
@@ -200,63 +170,6 @@ def save_logs(logs, path, n_saved=0, key="sample", np_path=None):
                 n_saved += npbatch.shape[0]
     return n_saved
 
-
-def get_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-r",
-        "--resume",
-        type=str,
-        nargs="?",
-        help="load from logdir or checkpoint in logdir",
-    )
-    parser.add_argument(
-        "-n",
-        "--n_samples",
-        type=int,
-        nargs="?",
-        help="number of samples to draw",
-        default=50000
-    )
-    parser.add_argument(
-        "-e",
-        "--eta",
-        type=float,
-        nargs="?",
-        help="eta for ddim sampling (0.0 yields deterministic sampling)",
-        default=1.0
-    )
-    parser.add_argument(
-        "-v",
-        "--vanilla_sample",
-        default=False,
-        action='store_true',
-        help="vanilla sampling (default option is DDIM sampling)?",
-    )
-    parser.add_argument(
-        "-l",
-        "--logdir",
-        type=str,
-        nargs="?",
-        help="extra logdir",
-        default="none"
-    )
-    parser.add_argument(
-        "-c",
-        "--custom_steps",
-        type=int,
-        nargs="?",
-        help="number of steps for ddim and fastdpm sampling",
-        default=50
-    )
-    parser.add_argument(
-        "--batch_size",
-        type=int,
-        nargs="?",
-        help="the bs",
-        default=10
-    )
-    return parser
 
 
 def load_model_from_config(config, sd):
@@ -363,7 +276,8 @@ if __name__ == "__main__":
         pool='attention',
     )
 
-    pl_sd = torch.load('saved_crc9_5percent_unet_classifier_ckpts/model_010000.pt', map_location="cpu")
+    # change path to the saved classifier model
+    pl_sd = torch.load('saved_classifier_train5+fake50%/model_010000.pt', map_location="cpu")
 
     classifier.load_state_dict(pl_sd)
     classifier.eval()

@@ -5,7 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c13a86f0-19f9-439d-89a5-62cd6f090c10" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/tmp/WSI_cropping.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classifier_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/classifier_train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/latent-diffusion/histo-ldm-kl-8.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/latent-diffusion/histo-ldm-kl-8.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dist_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/environment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/environment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eval.py" beforeDir="false" afterPath="$PROJECT_DIR$/eval.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fp16_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/fp16_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/image_datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resample.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/resample.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_diffusion.py" beforeDir="false" afterPath="$PROJECT_DIR$/sample_diffusion.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/script_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/train_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unet.py" beforeDir="false" afterPath="$PROJECT_DIR$/unet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,26 +49,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/karenyyy/Downloads/MICCAI-2023-Synthetic-Augmentation-with-Large-scale-Unconditional-Pre-training&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/usr/local/lib/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;web.server&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "last_opened_file_path": "/Users/karenyyy/Downloads/MICCAI-2023-Synthetic-Augmentation-with-Large-scale-Unconditional-Pre-training/tmp",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "/usr/local/lib/node_modules/prettier",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tmp" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/utils" />
+      <recent name="$PROJECT_DIR$/configs" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -65,7 +86,10 @@
       <option name="presentableId" value="Default" />
       <updated>1686610103889</updated>
       <workItem from="1686610105740" duration="2464000" />
-      <workItem from="1687043052998" duration="3249000" />
+      <workItem from="1687043052998" duration="3897000" />
+      <workItem from="1687801292306" duration="614000" />
+      <workItem from="1687802020391" duration="2039000" />
+      <workItem from="1687808299399" duration="18256000" />
     </task>
     <servers />
   </component>
