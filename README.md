@@ -1,14 +1,4 @@
-### Wrapping up, almost done, need to fix some hard-coding in scripts
-
-### Added wsi_cropping script in tmp/, 
-
-```python
-python WSI_cropping.py  \
-  --dataset <path of dataset containing svs>  \
-  --output <path to store tiled patches>  \
-  --scale 20 --patch_size 1024 --num_threads 16
-```
-
+### Wrapping up, almost done
 
 # Synthetic Augmentation with Large-scale Unconditional Pre-training
 
