@@ -1,6 +1,6 @@
 # Synthetic Augmentation with Large-scale Unconditional Pre-training
 
-[paper](https://link.springer.com/chapter/10.1007/978-3-031-43895-0_71)
+[[paper]](https://link.springer.com/chapter/10.1007/978-3-031-43895-0_71)
 
 This repository contains the code used in the MICCAI 23' paper titled "Synthetic Augmentation with Large-scale
 Unconditional Pre-training".
