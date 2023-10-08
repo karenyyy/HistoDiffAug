@@ -115,7 +115,17 @@ python vis.py
 ## Citation
 
 If you use this code in your own research, please cite the following paper:
-... [Insert citation here]
+
+```
+@inproceedings{ye2023synthetic,
+  title={Synthetic Augmentation with Large-Scale Unconditional Pre-training},
+  author={Ye, Jiarong and Ni, Haomiao and Jin, Peng and Huang, Sharon X and Xue, Yuan},
+  booktitle={International Conference on Medical Image Computing and Computer-Assisted Intervention},
+  pages={754--764},
+  year={2023},
+  organization={Springer}
+}
+```
 
 
 ## License
@@ -124,4 +134,4 @@ Specify the license for the code, if applicable.
 
 ## Contact
 
-For any questions or inquiries, please send email to ...
+For any questions or inquiries, please send email to `jxy225@psu.edu`.
