@@ -102,7 +102,7 @@ python vis.py
 #### centroid-based filtering
 
 ```python
-python distance.py
+python selective_filtering.py
 ```
 
 
