@@ -128,10 +128,6 @@ If you use this code in your own research, please cite the following paper:
 ```
 
 
-## License
-
-Specify the license for the code, if applicable.
-
 ## Contact
 
 For any questions or inquiries, please send email to `jxy225@psu.edu`.
