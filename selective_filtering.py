@@ -1,6 +1,7 @@
 import os
 import pickle
 import random
+import shutil
 from collections import defaultdict
 
 import numpy as np

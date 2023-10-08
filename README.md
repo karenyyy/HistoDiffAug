@@ -88,13 +88,23 @@ CUDA_VISIBLE_DEVICES=0 python classifier_train.py --data_dir /data/karenyyy/CRC_
 python sample_diffusion.py -r /data/histo_diffusion_augmentation/diffusion_model.ckpt -n 10 -c 10
 ```
 
+
+### evaluation 
+
+
+#### centroid feature extraction and umap visualization 
+
+```python
+python vis.py
+```
+
+
 #### centroid-based filtering
 
 ```python
 python distance.py
 ```
 
-### evaluation 
 
 #### crc 9 class classification
 
@@ -105,11 +115,6 @@ CUDA_VISIBLE_DEVICES=0 python eval.py \
                                 --output_dir train5+noft_randomfake50%
 ```
 
-#### umap visualization 
-
-```python
-python vis.py
-```
 
 
 ## Citation

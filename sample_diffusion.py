@@ -238,7 +238,6 @@ if __name__ == "__main__":
         print(f"Switching logdir from '{logdir}' to '{os.path.join(opt.logdir, locallog)}'")
         logdir = os.path.join(opt.logdir, locallog)
 
-    print(config)
 
     model, global_step = load_model(config, ckpt, gpu, eval_mode)
     print(f"global step: {global_step}")

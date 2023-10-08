@@ -16,7 +16,6 @@ class DDIMSampler(object):
         self.model = model
         self.ddpm_num_timesteps = model.num_timesteps
         # self.ddpm_num_timesteps = 200
-        print('self.ddpm_num_timesteps: ',  self.ddpm_num_timesteps)
         self.schedule = schedule
 
     def register_buffer(self, name, attr):
@@ -29,7 +28,6 @@ class DDIMSampler(object):
         self.ddim_timesteps = make_ddim_timesteps(ddim_discr_method=ddim_discretize, num_ddim_timesteps=ddim_num_steps,
                                                   num_ddpm_timesteps=self.ddpm_num_timesteps,verbose=verbose)
 
-        # print('self.ddim_timesteps: ', len(self.ddim_timesteps), self.ddim_timesteps)
         alphas_cumprod = self.model.alphas_cumprod
         assert alphas_cumprod.shape[0] == self.ddpm_num_timesteps, 'alphas have to be defined for each timestep'
         to_torch = lambda x: x.clone().detach().to(torch.float32).to(self.model.device)
@@ -131,9 +129,7 @@ class DDIMSampler(object):
         else:
             img = x_T
 
-        # print('timesteps ori: ', timesteps)
         if timesteps is None:
-            # print('self.ddim_timesteps 1: ', len(self.ddim_timesteps), self.ddim_timesteps)
 
             timesteps = self.ddpm_num_timesteps if ddim_use_original_steps else self.ddim_timesteps
         elif timesteps is not None and not ddim_use_original_steps:
@@ -143,23 +139,16 @@ class DDIMSampler(object):
 
 
         intermediates = {'x_inter': [img], 'pred_x0': [img]}
-        # print('ddim_use_original_steps: ', ddim_use_original_steps)
-        # print('timesteps: ', timesteps)
+
         time_range = reversed(range(0,timesteps)) if ddim_use_original_steps else np.flip(timesteps)
         total_steps = timesteps if ddim_use_original_steps else timesteps.shape[0]
         print(f"Running DDIM Sampling with {total_steps} timesteps")
 
-        # print('time_range: ', time_range)
         iterator = tqdm(time_range, desc='DDIM Sampler', total=total_steps)
 
         for i, step in enumerate(iterator):
             index = total_steps - i - 1
             ts = torch.full((b,), step, device=device, dtype=torch.long)
-            # print('b, step: ', b, step)
-            # if mask is not None:
-            #     assert x0 is not None
-            #     img_orig = self.model.q_sample(x0, ts)
-            #     img = img_orig * mask + (1. - mask) * img
 
             outs = self.p_sample_ddim(cond_fn, model_kwargs, img, cond, ts, total_steps=total_steps, index=index, use_original_steps=ddim_use_original_steps,
                                       quantize_denoised=quantize_denoised, temperature=temperature,
@@ -209,17 +198,12 @@ class DDIMSampler(object):
         #     e_t_uncond, e_t = self.model.apply_model(x_in, t_in, c_in).chunk(2)
         #     e_t = e_t_uncond + unconditional_guidance_scale * (e_t - e_t_uncond)
 
-        # print('use_original_steps: ', use_original_steps)
-        # print('self.model.alphas_cumprod, self.ddim_alphas: ',
-        #       self.model.alphas_cumprod, self.ddim_alphas.size())
 
         alphas = self.model.alphas_cumprod if use_original_steps else self.ddim_alphas
         alphas_prev = self.model.alphas_cumprod_prev if use_original_steps else self.ddim_alphas_prev
         sqrt_one_minus_alphas = self.model.sqrt_one_minus_alphas_cumprod if use_original_steps else self.ddim_sqrt_one_minus_alphas
         sigmas = self.model.ddim_sigmas_for_original_num_steps if use_original_steps else self.ddim_sigmas
         # select parameters corresponding to the currently considered timestep
-        # print('alphas, alphas_prev, sigmas, index: ',
-        #       alphas.size, alphas_prev.size, sigmas.size, index)
 
         a_t = torch.full((b, 1, 1, 1), alphas[index], device=device)
         a_prev = torch.full((b, 1, 1, 1), alphas_prev[index], device=device)
@@ -228,9 +212,7 @@ class DDIMSampler(object):
         e_t = self.model.apply_model(x, t, c)
 
         gradient = cond_fn(x, t, **model_kwargs)
-        # print('e_t, alphas, gradient: ', e_t.size(), alphas.type(), gradient.size(), t.type())
         alphas_t = alphas[t//20]
-        # print('alphas_t: ', alphas_t.size())
         e_t = e_t - (1 - alphas_t[:, None, None, None]).sqrt() * gradient * 10
         # e_t = e_t - (1 - alphas_t[:, None, None, None]).sqrt() * gradient
 

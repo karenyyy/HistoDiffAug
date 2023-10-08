@@ -46,7 +46,7 @@ model:
       params:
         embed_dim: 3
         monitor: "val/rec_loss"
-        ckpt_path: /data/histo_diffusion_augmentation/autoencoder.ckpt
+        ckpt_path: /data/histo_diffusion_augmentation/autoencoder.ckpt  # replace with path to your saved autoencoder checkpoint
         ddconfig:
           double_z: True
           z_channels: 3
