@@ -1,5 +1,3 @@
-### Wrapping up, almost done
-
 # Synthetic Augmentation with Large-scale Unconditional Pre-training
 
 This repository contains the code used in the MICCAI 23' paper titled "Synthetic Augmentation with Large-scale
